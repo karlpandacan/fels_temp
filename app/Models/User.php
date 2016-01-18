@@ -1,18 +1,19 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'follower_id', 'followee_id'
     ];
 
     /**
@@ -33,4 +34,15 @@ class User extends Authenticatable
          */
         return $this->type == 1;
     }
+
+    public function followers()
+    {
+        return $this->hasMany(Follow::class, 'follower_id');
+    }
+
+    public function followees()
+    {
+        return $this->hasMany(Follow::class, 'followee_id');
+    }
+
 }
