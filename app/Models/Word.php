@@ -10,16 +10,29 @@ class Word extends Model
 
     public function category()
     {
-        $this->belongsTo(Category::word);
+        return $this->belongsTo(Category::class);
     }
 
     public function learnedWords()
     {
-        $this->hasMany(LearnedWord::class);
+        return $this->hasMany(LearnedWord::class);
     }
 
     public function lessonWords()
     {
-        $this->hasMany(LessonWord::class);
+        return $this->hasMany(LessonWord::class);
+    }
+
+    public function assignValues($values)
+    {
+        if($values->input('word_id') !== null) {
+            $this->id = $values->input('word_id'); // Execute line if word will be updated
+        }
+
+        $this->category_id = $values->input('word_category');
+        $this->word_japanese = $values->input('word_japanese');
+        $this->word_vietnamese = $values->input('word_vietnamese');
+
+        $this->save();
     }
 }

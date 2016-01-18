@@ -6,6 +6,12 @@
     @foreach($categories as $category)
         <p><u>{{ $category->name }}</u></p>
         <p>{{ $category->description }}</p>
+        @if(!empty($category->image))
+            <p>
+                {!! HTML::image('images/categories/' . $category->image, $category->name, ['style' => 'max-height: 100px;']) !!}
+            </p>
+        @endif
+
         @if($user->isAdmin())
             <p>
                 {!! Form::open(['method' => 'get', 'route' => ['categories.edit', $category->id]]) !!}

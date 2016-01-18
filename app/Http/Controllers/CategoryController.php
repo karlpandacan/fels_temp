@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryController extends Controller
 {
@@ -18,8 +19,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $user = User::find(\Auth::id());
-        return view('categories.home', ['categories' => Category::all(), 'user' => $user]);
+        return view('categories.home', ['categories' => Category::all(), 'user' => \Auth::user()]);
     }
 
     public function create()
@@ -29,56 +29,57 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $category = new Category;
-
-        $this->assignValues($category, $request);
+        try {
+            $category = new Category;
+            $category->assignValues($request);
+            \Session::flash('flash_success', 'Add successful!');
+        } catch(Exception $e) {
+            \Session::flash('flash_error', 'Adding of category failed.');
+        }
 
         return redirect('/categories');
     }
 
     public function show($id)
     {
-        return Category::find($id);
+
     }
 
     public function edit($id)
     {
-        $category = Category::find($id);
+        try {
+            $category = Category::findOrFail($id);
+            return view('categories.edit', ['category' => $category]);
+        } catch(ModelNotFoundException $e) {
+            \Session::flash('flash_error', 'Edit failed. The category you are trying to edit cannot be found.');
+        }
 
-        return view('categories.edit', ['category' => $category]);
+        return redirect('/categories');
     }
 
     public function update(Request $request, $id)
     {
-        $category = Category::find($id);
-
-        $this->assignValues($category, $request);
+        try {
+            $category = Category::findOrFail($id);
+            $category->assignValues($request);
+            \Session::flash('flash_success', 'Update successful!');
+        } catch(ModelNotFoundException $e) {
+            \Session::flash('flash_error', 'Update failed. The category you are trying to update cannot be found.');
+        }
 
         return redirect('/categories');
     }
 
     public function destroy(Request $request, $id)
     {
-        $category = Category::find($id);
-
-        $category->delete();
+        try {
+            $category = Category::findOrFail($id);
+            $category->delete();
+            \Session::flash('flash_success', 'Delete successful!');
+        } catch(ModelNotFoundException $e) {
+            \Session::flash('flash_error', 'Delete failed. The category you are trying to delete cannot be found.');
+        }
 
         return redirect('/categories');
-    }
-
-    private function assignValues($category, $values)
-    {
-        if($values->input('category_id') !== null) {
-            $category->id = $values->input('categoryId'); // Execute line if category will be updated
-        }
-
-        $category->name = $values->input('categoryName');
-        $category->description = $values->input('categoryDesc');
-
-        if(!empty($values->input('categoryImage')) || ($values->input('categoryImage')) == null) {
-            $category->image = $values->input('categoryImage'); // Execute line if an image is set
-        }
-
-        $category->save();
     }
 }
