@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>Framgia E-Learning System</title>
 
     <!-- Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
@@ -39,8 +39,8 @@
                 </button>
 
                 <!-- Branding Image -->
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    Laravel
+                <a class="navbar-brand" href="{{ url('/home') }}">
+                    Framgia E-Learning System
                 </a>
             </div>
 
@@ -48,6 +48,9 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
+                    <li><a href="{{ url('/categories') }}">Category</a></li>
+                    <li><a href="{{ url('/words') }}">Words</a></li>
+                    <li><a href="{{ url('/lessons') }}">Lessons</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -57,12 +60,21 @@
                         <li><a href="{{ url('/login') }}">Login</a></li>
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
+                        <li>
+                            <div class="form-group has-feedback">
+                                <form action="{{ url('/user/search') }}" method="GET">
+                                    <input type="text" class="form-control" placeholder="Search User" name="q" id="q"/>
+                                    <i class="glyphicon glyphicon-search form-control-feedback"></i>
+                                </form>
+                            </div>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->name }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                <li><a href="{{ url('/user') }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                             </ul>
                         </li>
