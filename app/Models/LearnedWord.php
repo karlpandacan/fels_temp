@@ -10,11 +10,11 @@ class LearnedWord extends Model
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function word()
     {
-        $this->belongsTo(Word::class);
+        return $this->belongsTo(Word::class);
     }
 }

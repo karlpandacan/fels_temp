@@ -10,11 +10,29 @@ class Category extends Model
 
     public function lessons()
     {
-        $this->hasMany(Lesson::class);
+        return $this->hasMany(Lesson::class);
     }
 
     public function words()
     {
-        $this->hasMany(Word::class);
+        return $this->hasMany(Word::class, 'word_id');
+    }
+
+    public function assignValues($values)
+    {
+        if($values->input('category_id') !== null) {
+            $this->id = $values->input('category_id'); // Execute line if category will be updated
+        }
+
+        $this->name = $values->input('category_name');
+        $this->description = $values->input('category_desc');
+
+        if(!empty($values->input('category_image'))) {
+            $imageName = uniqid() . '.' . $values->file('category_image')->guessClientExtension();
+            $values->file('category_image')->move(base_path() . '/public/images/categories/', $imageName);
+            $this->image = $imageName;
+        }
+
+        $this->save();
     }
 }

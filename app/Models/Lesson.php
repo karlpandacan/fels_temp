@@ -10,21 +10,21 @@ class Lesson extends Model
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function category()
     {
-        $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function lessonWords()
     {
-        $this->hasMany(LessonWord::class);
+        return $this->hasMany(LessonWord::class);
     }
 
     public function activity()
     {
-        $this->hasOne(Activity::class);
+        return $this->hasOne(Activity::class);
     }
 }

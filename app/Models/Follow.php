@@ -10,11 +10,11 @@ class Follow extends Model
 
     public function followee()
     {
-        $this->belongsTo(User::class, 'followee_id');
+        return $this->belongsTo(User::class, 'followee_id');
     }
 
     public function follower()
     {
-        $this->belongsTo(User::class, 'follower_id');
+        return $this->belongsTo(User::class, 'follower_id');
     }
 }
