@@ -36,4 +36,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::resource('categories', 'CategoryController');
     Route::resource('words', 'WordController');
     Route::resource('follows', 'FollowController');
+    Route::resource('lessons', 'LessonController');
+    Route::resource('lesson_words', 'LessonWordController');
 });
