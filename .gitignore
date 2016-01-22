@@ -8,4 +8,6 @@ Homestead.yaml
 Homestead.json
 *.log
 /nbproject/private/
+/nbprojectpublic/images
 /nbproject
+/public/images
