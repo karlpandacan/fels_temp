@@ -13,7 +13,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'follower_id', 'followee_id'
+        'name',
+        'email',
+        'password',
+        'follower_id',
+        'followee_id'
     ];
 
     /**
@@ -22,7 +26,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     public function isAdmin()
@@ -37,12 +42,14 @@ class User extends Authenticatable
 
     public function followers()
     {
-        return $this->belongsToMany(User::class, 'follows', 'followee_id', 'follower_id');
+        return $this->belongsToMany(User::class, 'follows', 'followee_id',
+            'follower_id');
     }
 
     public function followees()
     {
-        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'followee_id');
+        return $this->belongsToMany(User::class, 'follows', 'follower_id',
+            'followee_id');
     }
 
     public function lessons()
@@ -58,5 +65,19 @@ class User extends Authenticatable
     public function activities()
     {
         return $this->hasMany(Activity::class);
+    }
+
+    public function uploadImage($request)
+    {
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = uniqid() . $file->getClientOriginalName();
+            $file->move('images/profile_picture', $filename);
+            return 'images/profile_picture/' . $filename;
+        } else {
+            return '';
+        }
+
+
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Follow;
-use App\Models\Activity;
+use App\Http\Requests\UserRequest;
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use Session;
+use Exemption;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -27,6 +27,82 @@ class UserController extends Controller
     {
         $user = \Auth::user();
         return view('users.index')->with('user', $user);
+    }
+
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    public function store(UserRequest $request)
+    {
+        try {
+            $user = new User;
+            $user->avatar = $user->uploadImage($request);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            $user->save();
+        } catch (Exception $e) {
+            Session::flash('flash_error', 'Adding of User failed.');
+        }
+
+        return redirect('/user/search');
+    }
+
+    public function show(User $user)
+    {
+        $activities = $user->activities()
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+        $learnedWords = $user->learnedWords()->count();
+        if (\Auth::user()->id == $user->id) {
+            $follow = 'self';
+        } else {
+            $follow = \Auth::user()->followers()->where('follower_id',
+                $user->id)->exists();
+            $follow = $follow ? 'following' : 'not following';
+        }
+        return view('users.view')
+            ->with('activities', $activities)
+            ->with('follow', $follow)
+            ->with('user', $user)
+            ->with('learnedWords', $learnedWords);
+    }
+
+    public function edit(User $user)
+    {
+        return view('users.edit')->with('user', $user);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        try {
+            $this->validate($request, [
+                'name' => 'required|max:255'
+            ]);
+            $user->avatar = $user->uploadImage($request);
+            $user->name = $request->name;
+            $user->save();
+            Session::flash('flash_success', 'Update successful!');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('flash_error',
+                'Update failed. The word you are trying to update cannot be found.');
+        }
+
+        return redirect()->back();
+    }
+
+    public function destroy(User $user)
+    {
+        try {
+            $user->delete();
+            Session::flash('message_success', 'Delete successful!');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('message_failed',
+                'Delete failed. The word you are trying to delete cannot be found.');
+        }
+        return redirect('/user/search');
     }
 
     public function search(Request $request)
@@ -52,24 +128,19 @@ class UserController extends Controller
             ->with('usersNotFollowing', $notFollowing);
     }
 
-    public function show($id)
+    public function updatePassword(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
-        $activities = $user->activities()
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-        $learnedWords = $user->learnedWords()->count();
-        if (\Auth::user()->id == $id) {
-            $follow = 'self';
-        } else {
-            $follow = \Auth::user()->followers()->where('follower_id', $id)->exists();
-            $follow = $follow ? 'following' : 'not following';
+        try {
+            $this->validate($request, [
+                'password' => 'required|confirmed|min:6'
+            ]);
+            $user->password = bcrypt($request->password);
+            $user->save();
+            Session::flash('flash_success', 'Update Password    successful!');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('flash_error',
+                'Update Unsuccessful Please Try Again.');
         }
-        return view('users.view')
-            ->with('activities', $activities)
-            ->with('follow', $follow)
-            ->with('user', $user)
-            ->with('learnedWords', $learnedWords);
+        return redirect()->back();
     }
-
 }

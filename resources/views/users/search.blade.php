@@ -5,9 +5,19 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-default">
-                <div class="panel-heading">Dashboard</div>
-
+                <div class="panel-heading">User Search</div>
                 <div class="panel-body">
+
+                    @if(Session::has('message_success'))
+                        <ul class="alert alert-success">
+                            <li>{{ Session::get('message_success') }}</li>
+                        </ul>
+                    @endif
+                    @if(Session::has('message_failed'))
+                        <ul class="alert alert-danger">
+                            <li>{{ Session::get('message_failed') }}</li>
+                        </ul>
+                    @endif
                     <div class="col-md-3"> 
                         <img src="../{{ Auth::user()->avatar }}" border="1px" height="250" width="100%">
                         <h4 align="center">{{ Auth::user()->name }}</h4>
