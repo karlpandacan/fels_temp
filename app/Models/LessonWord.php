@@ -31,7 +31,7 @@ class LessonWord extends Model
             ->get();
 
         $lessonWordsToInsert = [];
-        foreach($lessonWords as $lessonWord) {
+        foreach ($lessonWords as $lessonWord) {
             $lessonWordsToInsert[] = [
                 'lesson_id' => $request->lesson_id,
                 'word_id' => $lessonWord->id,
@@ -42,7 +42,7 @@ class LessonWord extends Model
         try {
             \Eloquent::insert($lessonWordsToInsert);
             return true;
-        } catch(Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

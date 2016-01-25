@@ -9,7 +9,7 @@
 
                 <div class="panel-body">
                     <div class="col-md-3"> 
-                        <img src="{{ Auth::user()->avatar }}" border="1px" height="250" width="100%">
+                        <img src="../{{ Auth::user()->avatar }}" border="1px" height="250" width="100%">
                         <h4 align="center">{{ Auth::user()->name }}</h4>
                     </div>
                     <div class="col-md-9">
@@ -27,12 +27,14 @@
                                     @foreach ($usersNotFollowing as $user)
                                         <div class="row" style="margin-top: 15px; margin-bottom: 15px">
                                             <div class="col-xs-2 text-right">
-                                                <img src="{{ $user->avatar }}" width="60" height="60" >
+                                                <img src="../{{ $user->avatar }}" width="60" height="60" >
                                             </div>
                                             <div class="col-xs-3 text-left">
                                                 <p>
-                                                    {{ $user->name }}
-                                                    {{ $user->email }}
+                                                    <a href="/user/{{ $user->id }}">
+                                                        {{ $user->name }}
+                                                        {{ $user->email }}
+                                                    </a>
                                                 </p>
                                             </div>
                                             <div class="col-xs-2 text-left">
@@ -52,12 +54,14 @@
                                     @foreach ($usersFollowing as $user)
                                         <div class="row" style="margin-top: 15px; margin-bottom: 15px">
                                             <div class="col-xs-2 text-right">
-                                                <img src="{{ $user->avatar }}" width="60" height="60" >
+                                                <img src="../{{ $user->avatar }}" width="60" height="60" >
                                             </div>
                                             <div class="col-xs-3 text-left">
                                                 <p>
-                                                    {{ $user->name }}
-                                                    {{ $user->email }}
+                                                    <a href="/user/{{ $user->id }}">
+                                                        {{ $user->name }}
+                                                        {{ $user->email }}
+                                                    </a>
                                                 </p>
                                             </div>
                                             <div class="col-xs-2 text-left">
