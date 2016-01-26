@@ -32,10 +32,22 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/user', 'UserController@index');
     Route::get('/user/search', 'UserController@search');
     Route::get('/home', 'HomeController@index');
-
+    Route::get('/user/{id}', 'UserController@show');
     Route::resource('categories', 'CategoryController');
     Route::resource('words', 'WordController');
     Route::resource('follows', 'FollowController');
     Route::resource('lessons', 'LessonController');
     Route::resource('lesson_words', 'LessonWordController');
+
+    Route::get('/exam', [
+        'as' => 'exam',
+        'uses' => 'LessonWordController@index'
+    ]);
+
+    Route::post('/exam', [
+        'as' => 'exam',
+        'uses' => 'LessonWordController@update'
+    ]);
+
+    Route::get('/result/{id}', 'LessonWordController@show');
 });

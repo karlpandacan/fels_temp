@@ -10,6 +10,7 @@ use App\Models\Word;
 use App\Models\Category;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Session;
 
 class WordController extends Controller
 {
@@ -35,9 +36,9 @@ class WordController extends Controller
         try {
             $word = new Word;
             $word->assignValues($request);
-            \Session::flash('flash_success', 'Adding of word successful!');
-        } catch(Exception $e) {
-            \Session::flash('flash_error', 'Adding of word failed.');
+            Session::flash('flash_success', 'Adding of word successful!');
+        } catch (Exception $e) {
+            Session::flash('flash_error', 'Adding of word failed.');
         }
 
         return redirect('/words');
@@ -54,8 +55,8 @@ class WordController extends Controller
             $word = Word::findOrFail($id);
             $categories = Category::lists('name', 'id');
             return view('words.edit', ['word' => $word, 'categories' => $categories]);
-        }   catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Edit failed. The word you are trying to edit cannot be found.');
+        }   catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Edit failed. The word you are trying to edit cannot be found.');
         }
 
         return redirect('/words');
@@ -66,9 +67,9 @@ class WordController extends Controller
         try {
             $word = Word::findOrFail($id);
             $word->assignValues($request);
-            \Session::flash('flash_success', 'Update successful!');
-        }   catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Update failed. The word you are trying to update cannot be found.');
+            Session::flash('flash_success', 'Update successful!');
+        }   catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Update failed. The word you are trying to update cannot be found.');
         }
 
         return redirect('/words');
@@ -79,9 +80,9 @@ class WordController extends Controller
         try {
             $word = Word::findOrFail($id);
             $word->delete();
-            \Session::flash('flash_success', 'Delete successful!');
-        }   catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Delete failed. The word you are trying to delete cannot be found.');
+            Session::flash('flash_success', 'Delete successful!');
+        }   catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Delete failed. The word you are trying to delete cannot be found.');
         }
 
         return redirect('/words');

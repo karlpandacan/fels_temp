@@ -3,12 +3,18 @@
     <title>Categories</title>
 </head>
 <body>
+    @if($user->isAdmin())
+        {!! Form::open(['method' => 'get', 'route' => 'categories.create']) !!}
+            {!! Form::submit('NEW CATEGORY') !!}
+        {!! Form::close() !!}
+    @endif
+
     @foreach($categories as $category)
         <p><u>{{ $category->name }}</u></p>
         <p>{{ $category->description }}</p>
         @if(!empty($category->image))
             <p>
-                {!! HTML::image('images/categories/' . $category->image, $category->name, ['style' => 'max-height: 100px;']) !!}
+                {!! Html::image('images/categories/' . $category->image, $category->name, ['style' => 'max-height: 100px;']) !!}
             </p>
         @endif
 
@@ -25,11 +31,5 @@
             </p>
         @endif
     @endforeach
-
-    @if($user->isAdmin())
-        {!! Form::open(['method' => 'get', 'route' => 'categories.create']) !!}
-            {!! Form::submit('NEW CATEGORY') !!}
-        {!! Form::close() !!}
-    @endif
 </body>
 </html>

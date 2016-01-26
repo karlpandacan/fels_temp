@@ -9,7 +9,7 @@
 
         @if(!empty($category->image))
             <p>
-                {!! HTML::image('images/categories/' . $category->image, $category->name, ['style' => 'max-height: 100px;']) !!}
+                {!! Html::image('images/categories/' . $category->image, $category->name, ['style' => 'max-height: 100px;']) !!}
             </p>
         @endif
 
