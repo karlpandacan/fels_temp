@@ -36,6 +36,11 @@ Route::group(['middleware' => 'web'], function () {
             'as' => 'user.update_password',
             'uses' => 'UserController@updatePassword'
         ]);
+    Route::get('/word/search',
+        [
+            'as' => 'words.search',
+            'uses' => 'WordController@search'
+        ]);
     Route::resource('user', 'UserController');
     Route::resource('categories', 'CategoryController');
     Route::resource('words', 'WordController');

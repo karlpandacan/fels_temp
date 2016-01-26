@@ -5,8 +5,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Dashboard</div>
-
+                    <div class="panel-heading">User Profile</div>
                     <div class="panel-body">
                         <div class="col-md-3">
                             <img src="../{{ $user->avatar }}" border="1px" height="250" width="100%">
