@@ -33,6 +33,12 @@ class Word extends Model
         $this->word_japanese = $values->input('word_japanese');
         $this->word_vietnamese = $values->input('word_vietnamese');
 
+        if(!empty($values->file('sound_file'))) {
+            $soundFile = uniqid() . '.' . $values->file('sound_file')->guessClientExtension();
+            $values->file('sound_file')->move(base_path() . '/public/sounds/words/', $soundFile);
+            $this->image = $soundFile;
+        }
+
         $this->save();
     }
 }

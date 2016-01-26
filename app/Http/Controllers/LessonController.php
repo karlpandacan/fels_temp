@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\Lesson;
+use App\Models\Category;
+use Exception;
 
 class LessonController extends Controller
 {
@@ -17,8 +19,8 @@ class LessonController extends Controller
 
     public function index()
     {
-        $lessons = Lesson::all();
-        return view('lessons.home', ['lessons' => $lessons]);
+        $categories = Category::all();
+        return view('lessons.home', ['categories' => $categories]);
     }
 
     public function create()
@@ -33,8 +35,8 @@ class LessonController extends Controller
     public function store(Request $request)
     {
         try {
-            $lesson = \Auth::user()->lessons()->create(['category_id' => 1]); // TEMPORARILY FIXED UNTIL CATEGORY'S FRONT END IS NOT YET DONE
-        } catch(Exception $e) {
+            $lesson = \Auth::user()->lessons()->create(['category_id' => $request->category_id]);
+        } catch (Exception $e) {
             \Session::flash('flash_error', 'Your lesson could not be generated. Please try again later.');
             return redirect()->back();
         }

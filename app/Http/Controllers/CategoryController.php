@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Session;
+use Exception;
 
 class CategoryController extends Controller
 {
@@ -32,9 +34,9 @@ class CategoryController extends Controller
         try {
             $category = new Category;
             $category->assignValues($request);
-            \Session::flash('flash_success', 'Add successful!');
-        } catch(Exception $e) {
-            \Session::flash('flash_error', 'Adding of category failed.');
+            Session::flash('flash_success', 'Add successful!');
+        } catch (Exception $e) {
+            Session::flash('flash_error', 'Adding of category failed.');
         }
 
         return redirect('/categories');
@@ -50,8 +52,8 @@ class CategoryController extends Controller
         try {
             $category = Category::findOrFail($id);
             return view('categories.edit', ['category' => $category]);
-        } catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Edit failed. The category you are trying to edit cannot be found.');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Edit failed. The category you are trying to edit cannot be found.');
         }
 
         return redirect('/categories');
@@ -62,9 +64,9 @@ class CategoryController extends Controller
         try {
             $category = Category::findOrFail($id);
             $category->assignValues($request);
-            \Session::flash('flash_success', 'Update successful!');
-        } catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Update failed. The category you are trying to update cannot be found.');
+            Session::flash('flash_success', 'Update successful!');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Update failed. The category you are trying to update cannot be found.');
         }
 
         return redirect('/categories');
@@ -75,9 +77,9 @@ class CategoryController extends Controller
         try {
             $category = Category::findOrFail($id);
             $category->delete();
-            \Session::flash('flash_success', 'Delete successful!');
-        } catch(ModelNotFoundException $e) {
-            \Session::flash('flash_error', 'Delete failed. The category you are trying to delete cannot be found.');
+            Session::flash('flash_success', 'Delete successful!');
+        } catch (ModelNotFoundException $e) {
+            Session::flash('flash_error', 'Delete failed. The category you are trying to delete cannot be found.');
         }
 
         return redirect('/categories');

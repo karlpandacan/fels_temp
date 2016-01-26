@@ -27,7 +27,7 @@ class Category extends Model
         $this->name = $values->input('category_name');
         $this->description = $values->input('category_desc');
 
-        if(!empty($values->input('category_image'))) {
+        if(!empty($values->file('category_image'))) {
             $imageName = uniqid() . '.' . $values->file('category_image')->guessClientExtension();
             $values->file('category_image')->move(base_path() . '/public/images/categories/', $imageName);
             $this->image = $imageName;

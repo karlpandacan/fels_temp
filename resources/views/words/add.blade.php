@@ -9,6 +9,7 @@
         <p>
             <p>{!! Form::text('word_japanese', null, ['placeholder' => 'Japanese Word']) !!}</p>
             <p>{!! Form::text('word_vietnamese', null, ['placeholder' => 'Vietnamese Word']) !!}</p>
+            <p>{!! Form::file('sound_file') !!}</p>
         </p>
         {!! Form::submit('Save') !!}
     {!! Form::close() !!}

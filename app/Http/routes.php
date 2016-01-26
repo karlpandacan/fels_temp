@@ -38,4 +38,16 @@ Route::group(['middleware' => 'web'], function () {
     Route::resource('follows', 'FollowController');
     Route::resource('lessons', 'LessonController');
     Route::resource('lesson_words', 'LessonWordController');
+
+    Route::get('/exam', [
+        'as' => 'exam',
+        'uses' => 'LessonWordController@index'
+    ]);
+
+    Route::post('/exam', [
+        'as' => 'exam',
+        'uses' => 'LessonWordController@update'
+    ]);
+
+    Route::get('/result/{id}', 'LessonWordController@show');
 });
