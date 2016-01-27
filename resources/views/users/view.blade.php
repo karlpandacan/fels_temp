@@ -13,12 +13,15 @@
                             <h5 align="center">Learned {{ $learnedWords }} Words</h5>
                             @if(\Auth::user()->isAdmin())
                                 <p>
-                                    {!! Form::open(['method' => 'get', 'route' => ['user.edit', $user->id]]) !!}
+                                    <a href="{{ url('users/create') }}" class="btn btn-primary">Add User</a>
+                                </p>
+                                <p>
+                                    {!! Form::open(['method' => 'get', 'route' => ['users.edit', $user->id]]) !!}
                                     {!! Form::submit('Edit User', ['class' => 'btn btn-info']) !!}
                                     {!! Form::close() !!}
                                 </p>
                                 <p>
-                                    {!! Form::open(['method' => 'delete', 'route' => ['user.destroy', $user->id]]) !!}
+                                    {!! Form::open(['method' => 'delete', 'route' => ['users.destroy', $user->id]]) !!}
                                     {!! Form::submit('Delete User', ['class' => 'btn btn-danger']) !!}
                                     {!! Form::close() !!}
                                 </p>

@@ -48,9 +48,14 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
-                    <li><a href="{{ url('/categories') }}">Category</a></li>
-                    <li><a href="{{ url('/words') }}">Words</a></li>
-                    <li><a href="{{ url('/lessons') }}">Lessons</a></li>
+                    @if (!Auth::guest())
+                        <li><a href="{{ url('/users') }}">Users</a></li>
+                        <li><a href="{{ url('/words') }}">Words</a></li>
+                        <li><a href="{{ url('/lessons') }}">Lessons</a></li>
+                        @if(Auth::user()->isAdmin())
+                             <li><a href="{{ url('/categories') }}">Category</a></li>
+                        @endif
+                    @endif
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -62,7 +67,7 @@
                     @else
                         <li>
                             <div class="form-group has-feedback">
-                                <form action="{{ url('/user/search') }}" method="GET">
+                                <form action="{{ url('/users/search') }}" method="GET">
                                     <input type="text" class="form-control" placeholder="Search User" name="q" id="q"/>
                                     <i class="glyphicon glyphicon-search form-control-feedback"></i>
                                 </form>
@@ -74,7 +79,7 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/user/'.\Auth::user()->id) }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
+                                <li><a href="{{ url('/users/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                             </ul>
                         </li>

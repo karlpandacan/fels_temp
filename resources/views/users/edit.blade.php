@@ -20,7 +20,7 @@
                                     @endforeach
                                 </ul>
                             @endif
-                            {!! Form::open(['method' => 'patch', 'route' => ['user.update', $user->id], 'files' => 'true']) !!}
+                            {!! Form::open(['method' => 'patch', 'route' => ['users.update', $user->id], 'files' => 'true']) !!}
                             <div class="form-group">
                                 {!! Form::label('name', 'Name') !!}
                                 {!! Form::text('name', $user->name, ['class' => 'form-control']) !!}
@@ -37,7 +37,7 @@
                     <div class="panel-heading">Change Password</div>
                     <div class="panel-body">
                         <div class="col-md-10">
-                            {!! Form::open(['method' => 'patch', 'route' => ['user.update_password', $user->id]]) !!}
+                            {!! Form::open(['method' => 'patch', 'route' => ['users.update_password', $user->id]]) !!}
                             <div class="form-group">
                                 {!! Form::label('password', 'Password') !!}
                                 {!! Form::password('password', ['class' => 'form-control']) !!}

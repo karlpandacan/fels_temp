@@ -29,19 +29,21 @@ Route::get('/', function () {
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
 
-    Route::get('/user/search', 'UserController@search');
+    Route::get('/users/search', 'UserController@search');
     Route::get('/home', 'HomeController@index');
-    Route::patch('/user/update_password/{user}',
+    Route::get('/words/search', ['as' => 'words.search', 'uses' => 'WordController@search']);
+    Route::get('/users', ['as' => 'users.index', 'uses' => 'UserController@index']);
+    Route::get('/users/create', ['as' => 'users.create', 'uses' => 'UserController@create']);
+    Route::post('/users', ['as' => 'users.store', 'uses' => 'UserController@store']);
+    Route::get('/users/{user}', ['as' => 'users.show', 'uses' => 'UserController@show']);
+    Route::get('/users/{user}/edit', ['as' => 'users.edit', 'uses' => 'UserController@edit']);
+    Route::patch('/users/{user}', ['as' => 'users.update', 'uses' => 'UserController@update']);
+    Route::delete('/users/{user}', ['as' => 'users.destroy', 'uses' => 'UserController@destroy']);
+    Route::patch('/users/update_password/{user}',
         [
-            'as' => 'user.update_password',
+            'as' => 'users.update_password',
             'uses' => 'UserController@updatePassword'
         ]);
-    Route::get('/word/search',
-        [
-            'as' => 'words.search',
-            'uses' => 'WordController@search'
-        ]);
-    Route::resource('user', 'UserController');
     Route::resource('categories', 'CategoryController');
     Route::resource('words', 'WordController');
     Route::resource('follows', 'FollowController');

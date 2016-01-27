@@ -41,7 +41,7 @@
                                             </div>
                                             <div class="col-xs-3 text-left">
                                                 <p>
-                                                    <a href="/user/{{ $user->id }}">
+                                                    <a href="/users/{{ $user->id }}">
                                                         {{ $user->name }}
                                                         {{ $user->email }}
                                                     </a>
@@ -68,7 +68,7 @@
                                             </div>
                                             <div class="col-xs-3 text-left">
                                                 <p>
-                                                    <a href="/user/{{ $user->id }}">
+                                                    <a href="/users/{{ $user->id }}">
                                                         {{ $user->name }}
                                                         {{ $user->email }}
                                                     </a>
