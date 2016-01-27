@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
+use App\Http\Controllers\LearnedWordController;
 
 class LessonWord extends Model
 {
@@ -11,7 +13,12 @@ class LessonWord extends Model
 
     public function word()
     {
-        return $this->belongsTo(Word::class);
+        return $this->belongsTo(Word::class, 'word_id');
+    }
+
+    public function wordAnswered()
+    {
+        return $this->belongsTo(Word::class, 'word_answered_id');
     }
 
     public function lesson()
@@ -19,10 +26,26 @@ class LessonWord extends Model
         return $this->belongsTo(Lesson::class);
     }
 
+    // This block is placed here to remove logic from the controller
+    public function getCorrectAnswerCount($results)
+    {
+        $correctAnswers = 0;
+        foreach($results as $result) {
+            if($result->word_id == $result->word_answered_id) {
+                $correctAnswers++;
+            }
+        }
+
+        return (object) [
+            'correct' => $correctAnswers,
+            'total' => count($results)
+        ];
+    }
+
     public function generateLessonWords($request)
     {
         // Fetch the ids of learned words to be used in querying the words that have not been learned yet
-        $learnedWords = \Auth::user()->learnedWords()->lists('id');
+        $learnedWords = Auth::user()->learnedWords()->lists('id');
         $lessonWords = Word::with(['category', 'lessonWords'])
             ->whereNotIn('id', $learnedWords)
             ->orderBy(\DB::raw('RAND()'))
@@ -39,7 +62,7 @@ class LessonWord extends Model
         }
 
         try {
-            return \Eloquent::insert($lessonWordsToInsert);
+            \Eloquent::insert($lessonWordsToInsert);
             return true;
         } catch (\Exception $e) {
             return false;
@@ -48,9 +71,16 @@ class LessonWord extends Model
 
     public function setAnswer($request)
     {
-        $this->word_answered_id = intval($request->input('word_answer_id'));
+        $this->update([
+            'word_answered_id' => $request->input('word_answer_id')
+        ]);
 
-        $this->save();
+        // Now check if the words match
+        if($this->word_id == $this->word_answered_id) {
+            $request->request->add(['word_id' => $this->word_id]);
+            $learnedWord = new LearnedWordController;
+            $learnedWord->store($request); // Add word id to Learned Words
+        }
     }
 
     /*
@@ -58,6 +88,6 @@ class LessonWord extends Model
      */
     public function getLastLessonId()
     {
-        return Lesson::where('user_id', '=', \Auth::id())->orderBy('created_at', 'desc')->first()->id;
+        return Lesson::where('user_id', '=', Auth::id())->orderBy('created_at', 'desc')->first()->id;
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Models\LessonWord;
 use App\Models\LearnedWord;
+use App\Models\Lesson;
 use App\Models\Word;
 use Session;
 use Exception;
@@ -73,18 +74,35 @@ class LessonWordController extends Controller
                 $lessonId = $lessonWord->getLastLessonId();
                 Session::flash('lessonId', $lessonId); // Flash the lesson id into the session
 
-                return redirect('exam'); // Redirect user to the exam page
+                return redirect('exams'); // Redirect user to the exam page
             }
         } catch(Exception $e) {
-            Session::flash('flash_error', 'Lesson generation failed. Please try again later.');
+            Session::flash('flash_error',
+                'Lesson generation failed. Please try again later.');
         }
 
         return redirect('categories');
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $lessonId)
     {
-        return 'this is your result: ' . $id;
+        $user = \Auth::user();
+
+        if(empty($lessonId) || $user->lessons()->where('id', '=', $lessonId)->count() == 0) {
+            return redirect('lessons'); // Redirect if session variable of lesson id does not exist
+        }
+
+        $lessonWord = new LessonWord;
+        $results = $lessonWord->with(['word', 'wordAnswered', 'word.category'])
+            ->where('lesson_id', $lessonId)
+            ->get();
+        $correctAnswerCount = $lessonWord->getCorrectAnswerCount($results);
+
+        return view('lessons.results', [
+            'user' => $user,
+            'results' => $results,
+            'count' => $correctAnswerCount
+        ]);
     }
 
     public function edit()
@@ -96,19 +114,19 @@ class LessonWordController extends Controller
     {
         try {
             $id = intval($request->input('lesson_word_id'));
-            $lessonWord = LessonWord::findOrFail($id);
-            $lessonWord->setAnswer($request);
+            $lessonWord = LessonWord::findOrFail($id)->setAnswer($request);
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error', 'Your answer cannot be saved. Please try again later.');
+            Session::flash('flash_error',
+                'Your answer cannot be saved. Please try again later.');
         }
 
         $nextIndex = intval(Session::get('questionIndex')) + 1;
         if($nextIndex < Session::get('maxQuestions')) {
             Session::flash('questionIndex', $nextIndex);
-            return redirect('exam');
+            return redirect('exams');
         } else {
             Session::flash('questionIndex', $nextIndex); // Add another one to prevent users from going back
-            return redirect('result/' . $id);
+            return redirect('results/' . Session::get('lessonId'));
         }
     }
 

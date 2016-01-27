@@ -53,7 +53,8 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             return view('categories.edit', ['category' => $category]);
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error', 'Edit failed. The category you are trying to edit cannot be found.');
+            Session::flash('flash_error',
+                'Edit failed. The category you are trying to edit cannot be found.');
         }
 
         return redirect('/categories');
@@ -62,11 +63,11 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $category = Category::findOrFail($id);
-            $category->assignValues($request);
+            $category = Category::findOrFail($id)->assignValues($request);
             Session::flash('flash_success', 'Update successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error', 'Update failed. The category you are trying to update cannot be found.');
+            Session::flash('flash_error',
+                'Update failed. The category you are trying to update cannot be found.');
         }
 
         return redirect('/categories');
@@ -75,11 +76,11 @@ class CategoryController extends Controller
     public function destroy(Request $request, $id)
     {
         try {
-            $category = Category::findOrFail($id);
-            $category->delete();
+            $category = Category::findOrFail($id)->delete();
             Session::flash('flash_success', 'Delete successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error', 'Delete failed. The category you are trying to delete cannot be found.');
+            Session::flash('flash_error',
+                'Delete failed. The category you are trying to delete cannot be found.');
         }
 
         return redirect('/categories');

@@ -37,7 +37,8 @@ class LessonController extends Controller
         try {
             $lesson = \Auth::user()->lessons()->create(['category_id' => $request->category_id]);
         } catch (Exception $e) {
-            \Session::flash('flash_error', 'Your lesson could not be generated. Please try again later.');
+            \Session::flash('flash_error',
+                'Your lesson could not be generated. Please try again later.');
             return redirect()->back();
         }
         // Route to LessonWordController to generate questions

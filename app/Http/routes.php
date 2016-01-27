@@ -48,15 +48,16 @@ Route::group(['middleware' => 'web'], function () {
     Route::resource('lessons', 'LessonController');
     Route::resource('lesson_words', 'LessonWordController');
 
-    Route::get('/exam', [
-        'as' => 'exam',
+    Route::get('/exams', [
+        'as' => 'exams',
         'uses' => 'LessonWordController@index'
     ]);
 
-    Route::post('/exam', [
-        'as' => 'exam',
+    Route::post('/exams', [
+        'as' => 'exams',
         'uses' => 'LessonWordController@update'
     ]);
 
-    Route::get('/result/{id}', 'LessonWordController@show');
+    Route::get('/results', 'LessonWordController@index');
+    Route::get('/results/{lessonId}', 'LessonWordController@show');
 });
