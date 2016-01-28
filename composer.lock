@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "03958e24c6c4dd6f3380c5a9b0ced255",
-    "content-hash": "a718867edf0acf6a3f8b96d66d32bfe1",
+    "hash": "1a2dd21ebc508ede85efc67af105baa2",
+    "content-hash": "a75fa34721477f62a9b51f131b3665f4",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -436,35 +436,32 @@
         },
         {
             "name": "laravelcollective/html",
-            "version": "v5.0.5",
+            "version": "v5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LaravelCollective/html.git",
-                "reference": "f1eddc7a7834854a3cb147a7601547394d345213"
+                "reference": "7ec0ca55cab54cc6d331007d86ec068b61f46aad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/f1eddc7a7834854a3cb147a7601547394d345213",
-                "reference": "f1eddc7a7834854a3cb147a7601547394d345213",
+                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/7ec0ca55cab54cc6d331007d86ec068b61f46aad",
+                "reference": "7ec0ca55cab54cc6d331007d86ec068b61f46aad",
                 "shasum": ""
             },
             "require": {
-                "illuminate/http": "~5.1",
-                "illuminate/routing": "~5.1",
-                "illuminate/session": "~5.1",
-                "illuminate/support": "~5.1",
-                "php": ">=5.4.0"
+                "illuminate/http": "5.2.*",
+                "illuminate/routing": "5.2.*",
+                "illuminate/session": "5.2.*",
+                "illuminate/support": "5.2.*",
+                "illuminate/view": "5.2.*",
+                "php": ">=5.5.9"
             },
             "require-dev": {
+                "illuminate/database": "5.2.*",
                 "mockery/mockery": "~0.9",
                 "phpunit/phpunit": "~4.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.1-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Collective\\Html\\": "src/"
@@ -487,7 +484,9 @@
                     "email": "adam@laravelcollective.com"
                 }
             ],
-            "time": "2015-05-21 16:45:14"
+            "description": "HTML and Form Builders for the Laravel Framework",
+            "homepage": "http://laravelcollective.com",
+            "time": "2016-01-20 18:28:21"
         },
         {
             "name": "league/flysystem",
