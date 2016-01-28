@@ -20,19 +20,37 @@ class Category extends Model
 
     public function assignValues($values)
     {
-        if($values->input('category_id') !== null) {
-            $this->id = $values->input('category_id'); // Execute line if category will be updated
-        }
-
-        $this->name = $values->input('category_name');
-        $this->description = $values->input('category_desc');
+        $data = [
+            'name' => $values->input('category_name'),
+            'description' => $values->input('category_desc')
+        ];
 
         if(!empty($values->file('category_image'))) {
-            $imageName = uniqid() . '.' . $values->file('category_image')->guessClientExtension();
-            $values->file('category_image')->move(base_path() . '/public/images/categories/', $imageName);
-            $this->image = $imageName;
+            $data = $this->saveImage($data, $values);
         }
 
-        $this->save();
+        if($values->input('category_id') == null) {
+            $this->firstOrCreate($data);
+        } else {
+            $this->update($data);
+        }
+    }
+
+    private function saveImage($data, $values)
+    {
+        $imageName = $this->image;
+        if(empty($this->image)) {
+            $imageName = $this->generateName($values); // Create new name;
+        }
+
+        $values->file('category_image')->move(base_path() . '/public/images/categories/', $imageName);
+        $data['image'] = $imageName;
+
+        return $data;
+    }
+
+    private function generateName($values)
+    {
+        return uniqid() . '.' . $values->file('category_image')->getClientOriginalExtension();
     }
 }

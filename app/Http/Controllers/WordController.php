@@ -69,8 +69,7 @@ class WordController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $word = Word::findOrFail($id);
-            $word->assignValues($request);
+            $word = Word::findOrFail($id)->assignValues($request);
             Session::flash('flash_success', 'Update successful!');
         } catch (ModelNotFoundException $e) {
             Session::flash('flash_error',
@@ -83,15 +82,14 @@ class WordController extends Controller
     public function destroy($id)
     {
         try {
-            $word = Word::findOrFail($id);
-            $word->delete();
+            $word = Word::findOrFail($id)->delete();
             Session::flash('flash_success', 'Delete successful!');
         } catch (ModelNotFoundException $e) {
             Session::flash('flash_error',
                 'Delete failed. The word you are trying to delete cannot be found.');
         }
 
-        return redirect('/words');
+        return redirect()->back();
     }
 
     public function search()

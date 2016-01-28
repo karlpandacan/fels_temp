@@ -4,6 +4,7 @@
 </head>
 <body>
     {!! Form::open(['method' => 'patch', 'route' => ['categories.update', $category->id], 'files' => 'true']) !!}
+        {!! Form::hidden('category_id', $category->id) !!}
         {!! Form::text('category_name', $category->name) !!}
         {!! Form::text('category_desc', $category->description) !!}
 
