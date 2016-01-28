@@ -17,7 +17,8 @@ class User extends Authenticatable
         'email',
         'password',
         'follower_id',
-        'followee_id'
+        'followee_id',
+        'type'
     ];
 
     /**

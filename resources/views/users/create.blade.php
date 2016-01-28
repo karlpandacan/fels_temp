@@ -15,7 +15,7 @@
                                     @endforeach
                                 </ul>
                             @endif
-                            {!! Form::open(['method' => 'store', 'route' => ['user.store'], 'files' => 'true']) !!}
+                            {!! Form::open(['method' => 'store', 'route' => ['users.store'], 'files' => 'true']) !!}
                             <div class="form-group">
                                 {!! Form::label('name', 'Name') !!}
                                 {!! Form::text('name', null, ['class' => 'form-control']) !!}
@@ -31,6 +31,10 @@
                             <div class="form-group">
                                 {!! Form::label('confirm_password', 'Confirm Password') !!}
                                 {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('type', 'User Type') !!}
+                                {!! Form::select('type', array('0' => 'User', '1' => 'Admin'), ['class' => 'form-control']) !!}
                             </div>
                             <div class="form-group">
                                 {!! Form::label('image', 'Profile Picture') !!}

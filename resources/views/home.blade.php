@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-9">
                         <a href="/words" class="btn btn-default btn-lg" role="button">Word</a> 
-                        <a href="/categories" class="btn btn-default btn-lg" role="button">Lesson</a>
+                        <a href="/lessons" class="btn btn-default btn-lg" role="button">Lesson</a>
                         <h2>Activities</h2>
                         <hr>
                         @if (count($activities) > 0)

@@ -25,8 +25,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = \Auth::user();
-        return view('users.index')->with('user', $user);
+        return redirect('/users/search');
     }
 
     public function create()
@@ -47,7 +46,7 @@ class UserController extends Controller
             Session::flash('flash_error', 'Adding of User failed.');
         }
 
-        return redirect('/user/search');
+        return redirect('/users/search');
     }
 
     public function show(User $user)
@@ -102,9 +101,9 @@ class UserController extends Controller
             Session::flash('message_failed',
                 'Delete failed. The word you are trying to delete cannot be found.');
         }
-        return redirect('/user/search');
+        return redirect('/users/search');
     }
-
+    
     public function search(Request $request)
     {
         $wildcard = $request->q;
