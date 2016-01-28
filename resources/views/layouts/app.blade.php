@@ -53,7 +53,7 @@
                         <li><a href="{{ url('/words') }}">Words</a></li>
                         <li><a href="{{ url('/lessons') }}">Lessons</a></li>
                         @if(Auth::user()->isAdmin())
-                             <li><a href="{{ url('/categories') }}">Category</a></li>
+                             <li><a href="{{ url('/categories') }}">Categories</a></li>
                         @endif
                     @endif
                 </ul>
