@@ -45,7 +45,7 @@ class LessonWord extends Model
     public function generateLessonWords($request)
     {
         // Fetch the ids of learned words to be used in querying the words that have not been learned yet
-        $learnedWords = Auth::user()->learnedWords()->lists('id');
+        $learnedWords = Auth::user()->learnedWords()->lists('word_id');
         $lessonWords = Word::with(['category', 'lessonWords'])
             ->whereNotIn('id', $learnedWords)
             ->orderBy(\DB::raw('RAND()'))

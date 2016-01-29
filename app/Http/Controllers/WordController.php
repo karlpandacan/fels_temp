@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Word;
 use App\Models\Category;
+use App\Models\LearnedWord;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Session;
+use Auth;
 
 class WordController extends Controller
 {
@@ -23,7 +25,9 @@ class WordController extends Controller
         return view('words.home', [
             'words' => $words,
             'user' => \Auth::user(),
-            'categories' => Category::lists('name', 'id')
+            'categories' => Category::lists('name', 'id'),
+            'status' => 'all',
+            'category_id' => '1'
         ]);
     }
 
@@ -92,8 +96,41 @@ class WordController extends Controller
         return redirect()->back();
     }
 
-    public function search()
+    public function search(Request $request)
     {
+        $user = Auth::user();
+        if(!empty($request->input('category')))  {
+            $categoryId = $request->input('category');
+        } else {
+            $categoryId = 1;
+        }
 
+        $learnedWords = $user->learnedWords()->lists('word_id');
+
+        switch($request->input('status')) {
+            case "learned":
+                $words = Word::where('category_id', $categoryId)
+                    ->whereIn('id', $learnedWords)
+                    ->paginate(20);
+                break;
+
+            case "unlearned":
+                $words = Word::where('category_id', $categoryId)
+                    ->whereNotIn('id', $learnedWords)
+                    ->paginate(20);
+                break;
+
+            default: // Default is all words
+                $words = Word::paginate(20);
+                break;
+        }
+
+        return view('words.home', [
+            'words' => $words,
+            'user' => $user,
+            'categories' => Category::lists('name', 'id'),
+            'status' => $request->input('status'),
+            'category_id' => $categoryId
+        ]);
     }
 }

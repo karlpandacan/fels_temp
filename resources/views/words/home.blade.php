@@ -8,13 +8,13 @@
                     <div class="panel-heading">Words</div>
                     <div class="panel-body">
                         {!! Form::open(['method' => 'get', 'route' => ['words.search']]) !!}
-                            {!! Form::select('category', $categories) !!}
+                            {!! Form::select('category', $categories, $category_id) !!}
+                            {!! Form::radio('status', 'learned', $status == 'learned') !!}
                             {!! Form::label('learned', 'Learned') !!}
-                            {!! Form::radio('status', 'learned', true) !!}
+                            {!! Form::radio('status', 'unlearned', $status == 'unlearned') !!}
                             {!! Form::label('unlearned', 'Not Learned') !!}
-                            {!! Form::radio('status', 'unlearned', true) !!}
+                            {!! Form::radio('status', 'all', $status == 'all') !!}
                             {!! Form::label('all', 'All') !!}
-                            {!! Form::radio('status', 'all', true) !!}
                         {!! Form::submit('Filter') !!}
                         {!! Form::close() !!}
                         @foreach($words as $word)
@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         @endforeach
-                        {{ $words->render() }}
+                        {{ $words->appends(['status' => $status, 'category' => $category_id])->render() }}
                         @if($user->isAdmin())
                             {!! Form::open(['method' => 'get', 'route' => 'words.create']) !!}
                             {!! Form::submit('NEW WORD') !!}
