@@ -11,7 +11,7 @@
                             <img src="../{{ $user->avatar }}" border="1px" height="250" width="100%">
                             <h4 align="center">{{ $user->name }}</h4>
                             <h5 align="center">Learned {{ $learnedWords }} Words</h5>
-                            @if(\Auth::user()->isAdmin())
+                            @if(auth()->user()->isAdmin())
                                 <p>
                                     <a href="{{ url('users/create') }}" class="btn btn-primary">Add User</a>
                                 </p>
@@ -46,6 +46,12 @@
                                     <div class="row" style="margin-top: 15px; margin-bottom: 15px">
                                         <div class="col-xs-10 text-left ">
                                             {{ $activity->content }} - {{ $activity->created_at->format('Y/m/d') }}
+                                            @if($activity->lesson_id != 0)
+                                                {{ Html::link_to_action('LessonWord@show' . $activity->lesson_id,
+                                                    'Review Exam',
+                                                    ['class' => 'btn btn-primary'])
+                                                }}
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach

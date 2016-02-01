@@ -42,6 +42,21 @@ class Word extends Model
         }
     }
 
+    public function scopeUserLearnedWords($query, $user)
+    {
+        return $query->whereIn('id', $user->getLearnedWordsIds());
+    }
+
+    public function scopeUserUnlearnedWords($query, $user)
+    {
+        return $query->whereNotIn('id', $user->getLearnedWordsIds());
+    }
+
+    public function scopeSelectWords($query)
+    {
+        return $query->select('id', 'word_japanese', 'word_vietnamese');
+    }
+
     private function saveSound($data, $values)
     {
         $soundFileName = $this->sound_file;

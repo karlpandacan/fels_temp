@@ -21,7 +21,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return view('categories.home', ['categories' => Category::all(), 'user' => \Auth::user()]);
+        return view('categories.home', ['categories' => Category::all()]);
     }
 
     public function create()
@@ -34,9 +34,9 @@ class CategoryController extends Controller
         try {
             $category = new Category;
             $category->assignValues($request);
-            Session::flash('flash_success', 'Add successful!');
+            session()->flash('flash_success', 'Add successful!');
         } catch (Exception $e) {
-            Session::flash('flash_error', 'Adding of category failed.');
+            session()->flash('flash_error', 'Adding of category failed.');
         }
 
         return redirect('/categories');
@@ -53,7 +53,7 @@ class CategoryController extends Controller
             $category = Category::findOrFail($id);
             return view('categories.edit', ['category' => $category]);
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Edit failed. The category you are trying to edit cannot be found.');
         }
 
@@ -64,9 +64,9 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id)->assignValues($request);
-            Session::flash('flash_success', 'Update successful!');
+            session()->flash('flash_success', 'Update successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Update failed. The category you are trying to update cannot be found.');
         }
 
@@ -77,9 +77,9 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id)->delete();
-            Session::flash('flash_success', 'Delete successful!');
+            session()->flash('flash_success', 'Delete successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Delete failed. The category you are trying to delete cannot be found.');
         }
 

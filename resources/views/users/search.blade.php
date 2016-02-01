@@ -8,19 +8,19 @@
                 <div class="panel-heading">User Search</div>
                 <div class="panel-body">
 
-                    @if(Session::has('message_success'))
+                    @if(session()->has('message_success'))
                         <ul class="alert alert-success">
-                            <li>{{ Session::get('message_success') }}</li>
+                            <li>{{ session('message_success') }}</li>
                         </ul>
                     @endif
-                    @if(Session::has('message_failed'))
+                    @if(session()->has('message_failed'))
                         <ul class="alert alert-danger">
-                            <li>{{ Session::get('message_failed') }}</li>
+                            <li>{{ session('message_failed') }}</li>
                         </ul>
                     @endif
-                    <div class="col-md-3"> 
-                        <img src="../{{ Auth::user()->avatar }}" border="1px" height="250" width="100%">
-                        <h4 align="center">{{ Auth::user()->name }}</h4>
+                    <div class="col-md-3">
+                        <img src="../{{ auth()->user()->avatar }}" border="1px" height="250" width="100%">
+                        <h4 align="center">{{ auth()->user()->name }}</h4>
                     </div>
                     <div class="col-md-9">
                         <ul class="nav nav-tabs" role="tablist">
@@ -28,7 +28,7 @@
                                 <a href="#following" aria-controls="profile" role="tab" data-toggle="tab">Not Following</a>
                             </li>
                             <li role="presentation">
-                                <a href="#not_following" aria-controls="home" role="tab" data-toggle="tab">Follwing</a>
+                                <a href="#not_following" aria-controls="home" role="tab" data-toggle="tab">Following</a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -55,7 +55,7 @@
                                             </div>
                                         </div>
                                     @endforeach
-                                @else 
+                                @else
                                     <h3>No Record Found</h3>
                                 @endif
                             </div>
@@ -78,13 +78,13 @@
                                                 {!! Form::model($user, array('method' => 'DELETE', 'route' => array('follows.destroy', $user->id))) !!}
                                                     {!! Form::submit('Unfollow', ['class' => 'btn btn-danger']) !!}
                                                 {!! Form::close() !!}
-                                               
+
                                             </div>
-                                        </div>        
+                                        </div>
                                     @endforeach
-                                @else 
+                                @else
                                     <h3>No Record Found</h3>
-                                @endif 
+                                @endif
                             </div>
                         </div>
                     </div>

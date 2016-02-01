@@ -13,6 +13,6 @@ class LearnedWordController extends Controller
 {
     public function store(Request $request)
     {
-        Auth::user()->learnedWords()->create(['word_id' => $request->word_id]);
+        auth()->user()->learnedWords()->create(['word_id' => $request->word_id]);
     }
 }

@@ -7,7 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Categories</div>
                     <div class="panel-body">
-                        @if($user->isAdmin())
+                        @if(auth()->user()->isAdmin())
                             {!! Form::open(['method' => 'get', 'route' => 'categories.create']) !!}
                                 {!! Form::submit('Add Category', ['class' => 'btn btn-primary']) !!}
                             {!! Form::close() !!}
@@ -27,7 +27,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xs-4">
-                                    @if($user->isAdmin())
+                                    @if(auth()->user()->isAdmin())
                                         {!! Form::open(['method' => 'get', 'route' => ['categories.edit', $category->id]]) !!}
                                             {!! Form::submit('Edit', ['class' => 'btn btn-info']) !!}
                                         {!! Form::close() !!}

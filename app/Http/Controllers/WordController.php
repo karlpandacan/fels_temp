@@ -14,6 +14,7 @@ use Auth;
 
 class WordController extends Controller
 {
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -21,11 +22,9 @@ class WordController extends Controller
 
     public function index()
     {
-        $words = Word::with('category')->paginate(20);
         return view('words.home', [
-            'words' => $words,
-            'user' => \Auth::user(),
-            'categories' => Category::lists('name', 'id'),
+            'words' => Word::paginate(20),
+            'categories' => Category::first()->listCategories(),
             'status' => 'all',
             'category_id' => '1'
         ]);
@@ -33,8 +32,7 @@ class WordController extends Controller
 
     public function create()
     {
-        $categories = Category::lists('name', 'id');
-        return view('words.add', ['categories' => $categories]);
+        return view('words.add', ['categories' => Category::first()->listCategories()]);
     }
 
     public function store(Request $request)
@@ -42,9 +40,9 @@ class WordController extends Controller
         try {
             $word = new Word;
             $word->assignValues($request);
-            Session::flash('flash_success', 'Adding of word successful!');
+            session()->flash('flash_success', 'Adding of word successful!');
         } catch (Exception $e) {
-            Session::flash('flash_error', 'Adding of word failed.');
+            session()->flash('flash_error', 'Adding of word failed.');
         }
 
         return redirect('/words');
@@ -59,11 +57,10 @@ class WordController extends Controller
     {
         try {
             $word = Word::findOrFail($id);
-            $categories = Category::lists('name', 'id');
             return view('words.edit',
-                ['word' => $word, 'categories' => $categories]);
+                ['word' => $word, 'categories' => Category::first()->listCategories()]);
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Edit failed. The word you are trying to edit cannot be found.');
         }
 
@@ -74,9 +71,9 @@ class WordController extends Controller
     {
         try {
             $word = Word::findOrFail($id)->assignValues($request);
-            Session::flash('flash_success', 'Update successful!');
+            session()->flash('flash_success', 'Update successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Update failed. The word you are trying to update cannot be found.');
         }
 
@@ -87,9 +84,9 @@ class WordController extends Controller
     {
         try {
             $word = Word::findOrFail($id)->delete();
-            Session::flash('flash_success', 'Delete successful!');
+            session()->flash('flash_success', 'Delete successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Delete failed. The word you are trying to delete cannot be found.');
         }
 
@@ -98,39 +95,33 @@ class WordController extends Controller
 
     public function search(Request $request)
     {
-        $user = Auth::user();
         if(!empty($request->input('category')))  {
-            $categoryId = $request->input('category');
+            $category = Category::findOrFail($request->input('category'));
         } else {
-            $categoryId = 1;
+            $category = Category::first();
         }
-
-        $learnedWords = $user->learnedWords()->lists('word_id');
 
         switch($request->input('status')) {
             case "learned":
-                $words = Word::where('category_id', $categoryId)
-                    ->whereIn('id', $learnedWords)
-                    ->paginate(20);
+                $words = $category->words()->userLearnedWords(auth()->user())
+                ->selectWords()->paginate(20);
                 break;
 
             case "unlearned":
-                $words = Word::where('category_id', $categoryId)
-                    ->whereNotIn('id', $learnedWords)
-                    ->paginate(20);
+                $words = $category->words()->userUnlearnedWords(auth()->user())
+                ->selectWords()->paginate(20);
                 break;
 
             default: // Default is all words
-                $words = Word::paginate(20);
+                $words = $category->words()->selectWords()->paginate(20);
                 break;
         }
 
         return view('words.home', [
             'words' => $words,
-            'user' => $user,
-            'categories' => Category::lists('name', 'id'),
+            'categories' => $category->listCategories(),
             'status' => $request->input('status'),
-            'category_id' => $categoryId
+            'category_id' => $category->id
         ]);
     }
 }
