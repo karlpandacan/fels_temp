@@ -43,7 +43,7 @@ class UserController extends Controller
             $user->password = bcrypt($request->password);
             $user->save();
         } catch (Exception $e) {
-            Session::flash('flash_error', 'Adding of User failed.');
+            session()->flash('flash_error', 'Adding of User failed.');
         }
 
         return redirect('/users/search');
@@ -51,14 +51,12 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $activities = $user->activities()
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $activities = $user->activities()->latest()->paginate(15);
         $learnedWords = $user->learnedWords()->count();
-        if (\Auth::user()->id == $user->id) {
+        if (auth()->user()->id == $user->id) {
             $follow = 'self';
         } else {
-            $follow = \Auth::user()->followers()->where('follower_id',
+            $follow = auth()->user()->followers()->where('follower_id',
                 $user->id)->exists();
             $follow = $follow ? 'following' : 'not following';
         }
@@ -83,9 +81,9 @@ class UserController extends Controller
             $user->avatar = $user->uploadImage($request);
             $user->name = $request->name;
             $user->save();
-            Session::flash('flash_success', 'Update successful!');
+            session()->flash('flash_success', 'Update successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Update failed. The word you are trying to update cannot be found.');
         }
 
@@ -96,9 +94,9 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            Session::flash('message_success', 'Delete successful!');
+            session()->flash('message_success', 'Delete successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('message_failed',
+            session()->flash('message_failed',
                 'Delete failed. The word you are trying to delete cannot be found.');
         }
         return redirect('/users/search');
@@ -107,24 +105,14 @@ class UserController extends Controller
     public function search(Request $request)
     {
         $wildcard = $request->q;
-        $user = \Auth::user();
-        $notFollowing = User::whereNotIn('id',
-            $user->followers()->lists('follows.follower_id'))
-            ->where('id', '<>', $user->id)
-            ->where(function ($query) use ($wildcard) {
-                $query->where('name', 'like', '%' . $wildcard . '%')
-                    ->orwhere('email', 'like', '%' . $wildcard . '%');
-            })
-            ->get();
-        $following = $user->followers()
-            ->where(function ($query) use ($wildcard) {
-                $query->where('name', 'like', '%' . $wildcard . '%')
-                    ->orwhere('email', 'like', '%' . $wildcard . '%');
-            })
-            ->get();
+        $user = auth()->user();
+        $followingIds = $user->followers()->lists('follows.follower_id');
+        $followingIds->push($user->id);
+        $usersNotFollowing = User::ofNotIds($followingIds)->findUser($wildcard)->get();
+        $usersFollowing = $user->followers()->findUser($wildcard)->get();
         return view('users.search')
-            ->with('usersFollowing', $following)
-            ->with('usersNotFollowing', $notFollowing);
+            ->with('usersFollowing', $usersFollowing)
+            ->with('usersNotFollowing', $usersNotFollowing);
     }
 
     public function updatePassword(Request $request, User $user)
@@ -135,9 +123,9 @@ class UserController extends Controller
             ]);
             $user->password = bcrypt($request->password);
             $user->save();
-            Session::flash('flash_success', 'Update Password    successful!');
+            session()->flash('flash_success', 'Update Password    successful!');
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Update Unsuccessful Please Try Again.');
         }
         return redirect()->back();
