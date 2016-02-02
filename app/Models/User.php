@@ -78,7 +78,16 @@ class User extends Authenticatable
         } else {
             return '';
         }
+    }
 
+    public function scopeFindUser($query, $wildcard)
+    {
+        return $query->where('name', 'like', '%' . $wildcard . '%')
+            ->orwhere('email', 'like', '%' . $wildcard . '%');
+    }
 
+    public function scopeOfNotIds($query, $ids)
+    {
+        return $query->whereNotIn('id', $ids);
     }
 }

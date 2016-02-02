@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
-use App\Models\LearnedWord;
 use App\Http\Requests;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -26,12 +24,10 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = \Auth::user();
+        $user = auth()->user();
         $followingIds = $user->followers()->lists('follows.follower_id');
         $followingIds->push($user->id);
-        $activities = Activity::whereIn('user_id', $followingIds)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $activities = Activity::userIds($followingIds)->latest()->paginate(15);
         $activities->load('user');
         $learnedWords = $user->learnedWords()->count();
         return view('home')

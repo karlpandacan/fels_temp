@@ -17,4 +17,9 @@ class Activity extends Model
     {
         return $this->belongsTo(Lesson::class);
     }
+
+    public function scopeUserIds($query, $ids)
+    {
+        return $query->whereIn('user_id', $ids);
+    }
 }
