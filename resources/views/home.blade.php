@@ -9,12 +9,19 @@
 
                 <div class="panel-body">
                     <div class="col-md-3">
-                        <img src="{{ Auth::user()->avatar }}" border="1px" height="250" width="100%">
-                        <h4 align="center">{{ Auth::user()->name }}</h4>
+                        @if(!empty(auth()->user()->avatar))
+                            {!! Html::image(auth()->user()->avatar, auth()->user()->name, ['style' => 'max-height: 250; width:100%']) !!}
+                        @else
+                            {!! Html::image('images/user_default.jpg', auth()->user()->name, ['style' => 'max-height: 250; width:100%']) !!}
+                        @endif
+                        <h2 align="center">{{ auth()->user()->name }}</h2>
+                        <h4 align="center">{{ auth()->user()->email }}</h4>
                         <h5 align="center">Learned {{ $words }} Words</h5>
+                        <h5 align="center">{{ $followers }} Followers</h5>
+                        <h5 align="center">{{ $following }} Following</h5>
                     </div>
                     <div class="col-md-9">
-                        <a href="/words" class="btn btn-default btn-lg" role="button">Word</a> 
+                        <a href="/words" class="btn btn-default btn-lg" role="button">Word</a>
                         <a href="/lessons" class="btn btn-default btn-lg" role="button">Lesson</a>
                         <h2>Activities</h2>
                         <hr>
@@ -27,11 +34,17 @@
                                     <div class="col-xs-10 text-left ">
                                         {{ $activity->user->name }} <br>
                                         {{ $activity->content }} - {{ $activity->created_at->format('Y/m/d') }}
+                                        @if($activity->lesson_id != 0)
+                                            {{ link_to('results/' . $activity->lesson_id,
+                                                'Review Exam',
+                                                ['class' => 'btn btn-primary'])
+                                            }}
+                                        @endif
                                     </div>
                                 </div>
                             @endforeach
                             {!! $activities->render() !!}
-                        @else 
+                        @else
                             <h3>No Record Found</h3>
                         @endif
                     </div>

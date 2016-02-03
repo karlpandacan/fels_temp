@@ -8,15 +8,16 @@
                     <div class="panel-heading">User Profile</div>
                     <div class="panel-body">
                         <div class="col-md-3">
+                            @if(!empty($category->image))
                             <img src="../{{ $user->avatar }}" border="1px" height="250" width="100%">
                             <h4 align="center">{{ $user->name }}</h4>
                             <h5 align="center">Learned {{ $learnedWords }} Words</h5>
-                            @if(\Auth::user()->isAdmin())
+                            @if(auth()->user()->isAdmin())
                                 <p>
                                     <a href="{{ url('users/create') }}" class="btn btn-primary">Add User</a>
                                 </p>
                                 <p>
-                                    {!! Form::open(['method' => 'get', 'route' => ['users.edit', $user->id]]) !!}
+                                    {!! Form::open(['method' => 'get', 'route' => ['users.edit', $user->id]]) !!} 
                                     {!! Form::submit('Edit User', ['class' => 'btn btn-info']) !!}
                                     {!! Form::close() !!}
                                 </p>
@@ -46,6 +47,13 @@
                                     <div class="row" style="margin-top: 15px; margin-bottom: 15px">
                                         <div class="col-xs-10 text-left ">
                                             {{ $activity->content }} - {{ $activity->created_at->format('Y/m/d') }}
+                                            @if($activity->lesson_id != 0)
+                                                {{ link_to_route('lesson_words.show',  
+                                                    'Review Exam',
+													$activity->lesson_id,
+                                                    ['class' => 'btn btn-primary'])
+                                                }}
+                                            @endif
                                         </div>
                                     </div>
                                 @endforeach

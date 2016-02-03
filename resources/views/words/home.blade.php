@@ -7,6 +7,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Words</div>
                     <div class="panel-body">
+                        @if(auth()->user()->isAdmin())
+                            {!! Form::open(['method' => 'get', 'route' => 'words.create']) !!}
+                            {!! Form::submit('NEW WORD', ['class' => 'btn btn-success']) !!}
+                            {!! Form::close() !!}
+                        @endif
+
                         {!! Form::open(['method' => 'get', 'route' => ['words.search']]) !!}
                             {!! Form::select('category', $categories, $category_id) !!}
                             {!! Form::radio('status', 'learned', $status == 'learned') !!}
@@ -15,7 +21,7 @@
                             {!! Form::label('unlearned', 'Not Learned') !!}
                             {!! Form::radio('status', 'all', $status == 'all') !!}
                             {!! Form::label('all', 'All') !!}
-                        {!! Form::submit('Filter') !!}
+                        {!! Form::submit('Filter', ['class' => 'btn btn-primary']) !!}
                         {!! Form::close() !!}
                         @foreach($words as $word)
                             <div class="row">
@@ -29,7 +35,7 @@
                                     {{ $word->word_vietnamese }}
                                 </div>
                                 <div class="col-xs-2">
-                                    @if($user->isAdmin())
+                                    @if(auth()->user()->isAdmin())
                                         {!! Form::open(['method' => 'get', 'route' => ['words.edit', $word->id]]) !!}
                                         {!! Form::submit('Edit', ['class' => 'btn btn-primary']) !!}
                                         {!! Form::close() !!}
@@ -41,11 +47,6 @@
                             </div>
                         @endforeach
                         {{ $words->appends(['status' => $status, 'category' => $category_id])->render() }}
-                        @if($user->isAdmin())
-                            {!! Form::open(['method' => 'get', 'route' => 'words.create']) !!}
-                            {!! Form::submit('NEW WORD') !!}
-                            {!! Form::close() !!}
-                        @endif
                     </div>
                 </div>
             </div>

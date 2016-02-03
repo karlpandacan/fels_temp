@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Create New Categories</div>
+                    <div class="panel-heading">New Category</div>
                     <div class="panel-body">
                         <div class="col-md-10">
                             {!! Form::open(['method' => 'post', 'route' => 'categories.store', 'files' => 'true']) !!}

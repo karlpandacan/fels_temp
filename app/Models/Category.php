@@ -15,7 +15,7 @@ class Category extends Model
 
     public function words()
     {
-        return $this->hasMany(Word::class, 'word_id');
+        return $this->hasMany(Word::class, 'category_id');
     }
 
     public function assignValues($values)
@@ -34,6 +34,16 @@ class Category extends Model
         } else {
             $this->update($data);
         }
+    }
+
+    public function listCategories()
+    {
+        return $this->lists('name', 'id');
+    }
+
+    public function getAvailableQuestions()
+    {
+        return Word::userUnlearnedWords()->get();
     }
 
     private function saveImage($data, $values)

@@ -48,11 +48,11 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
-                    @if (!Auth::guest())
+                    @if (!auth()->guest())
                         <li><a href="{{ url('/users') }}">Users</a></li>
                         <li><a href="{{ url('/words') }}">Words</a></li>
                         <li><a href="{{ url('/lessons') }}">Lessons</a></li>
-                        @if(Auth::user()->isAdmin())
+                        @if(auth()->user()->isAdmin())
                              <li><a href="{{ url('/categories') }}">Categories</a></li>
                         @endif
                     @endif
@@ -61,7 +61,7 @@
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
-                    @if (Auth::guest())
+                    @if (auth()->guest())
                         <li><a href="{{ url('/login') }}">Login</a></li>
                         <li><a href="{{ url('/register') }}">Register</a></li>
                     @else
@@ -75,11 +75,11 @@
                         </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                                {{ auth()->user()->name }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="{{ url('/users/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
+                                <li><a href="{{ url('/users/'.auth()->user()->id) }}"><i class="fa fa-btn fa-user"></i>Profile</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
                             </ul>
                         </li>

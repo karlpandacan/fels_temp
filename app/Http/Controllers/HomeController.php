@@ -30,8 +30,12 @@ class HomeController extends Controller
         $activities = Activity::userIds($followingIds)->latest()->paginate(15);
         $activities->load('user');
         $learnedWords = $user->learnedWords()->count();
+        $followers = $user->followees()->count();
+        $following = $user->followers()->count();
         return view('home')
             ->with('activities', $activities)
+            ->with('followers', $followers)
+            ->with('following', $following)
             ->with('words', $learnedWords);
     }
 }

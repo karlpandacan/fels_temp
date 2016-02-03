@@ -10,6 +10,7 @@ use App\Models\LessonWord;
 use App\Models\LearnedWord;
 use App\Models\Lesson;
 use App\Models\Word;
+use App\Models\Activity;
 use Session;
 use Exception;
 
@@ -18,36 +19,36 @@ class LessonWordController extends Controller
     public function __construct()
     {
         // Keep some session flash variables so that users could refresh the page in case they lose connection for a while
-        Session::keep('lessonId');
-        Session::keep('maxQuestions');
-        Session::keep('questionIndex');
+        session()->keep('lessonId');
+        session()->keep('maxQuestions');
+        session()->keep('questionIndex');
         $this->middleware('auth');
     }
 
     public function index(Request $request)
     {
         /*
-         * Session::keep here is used to retain the lesson id even if the user refreshes the page
+         * session()->keep here is used to retain the lesson id even if the user refreshes the page
          * this keeps the lesson id hidden to the user and inaccessible by anyone else
          * the lesson id is not retained when navigating away from the page so the page will be inaccessible once done
          */
-        $lessonId = Session::get('lessonId');
+        $lessonId = session('lessonId');
 
         // If lesson id does not exist in the session, do not allow access to the page
         if(!isset($lessonId)) {
             return redirect('lessons');
         }
 
-        $user = \Auth::user();
+        $user = auth()->user();
         $words = Word::orderBy(\DB::raw('RAND()'))->take(80)->get();
 
         $questions = LessonWord::with('word')->where('lesson_id', $lessonId)->get();
-        Session::flash('maxQuestions', count($questions));
+        session()->flash('maxQuestions', count($questions));
 
-        if(empty(Session::get('questionIndex'))) {
-            Session::flash('questionIndex', 0); // Start with index zero
+        if(empty(session('questionIndex'))) {
+            session()->flash('questionIndex', 0); // Start with index zero
         } else {
-            Session::keep('questionIndex');
+            session()->keep('questionIndex');
         }
 
         $generatedOptions = $this->generateOptions($questions, $words); // Pass this to view
@@ -70,39 +71,23 @@ class LessonWordController extends Controller
     {
         $lessonWord = new LessonWord;
         try {
-            if($lessonWord->generateLessonWords($request) != false) {
-                $lessonId = $lessonWord->getLastLessonId();
-                Session::flash('lessonId', $lessonId); // Flash the lesson id into the session
+            if($lessonWord->generateLessonWords($request, auth()->user()) != false) {
+                $lessonId = $lessonWord->getLastLessonId(auth()->id());
+                session()->flash('lessonId', $lessonId); // Flash the lesson id into the session
 
                 return redirect('exams'); // Redirect user to the exam page
             }
         } catch(Exception $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Lesson generation failed. Please try again later.');
         }
 
-        return redirect('categories');
+        return redirect('lessons');
     }
 
-    public function show(Request $request, $lessonId)
+    public function show()
     {
-        $user = \Auth::user();
 
-        if(empty($lessonId) || $user->lessons()->where('id', '=', $lessonId)->count() == 0) {
-            return redirect('lessons'); // Redirect if session variable of lesson id does not exist
-        }
-
-        $lessonWord = new LessonWord;
-        $results = $lessonWord->with(['word', 'wordAnswered', 'word.category'])
-            ->where('lesson_id', $lessonId)
-            ->get();
-        $correctAnswerCount = $lessonWord->getCorrectAnswerCount($results);
-
-        return view('lessons.results', [
-            'user' => $user,
-            'results' => $results,
-            'count' => $correctAnswerCount
-        ]);
     }
 
     public function edit()
@@ -116,17 +101,23 @@ class LessonWordController extends Controller
             $id = intval($request->input('lesson_word_id'));
             $lessonWord = LessonWord::findOrFail($id)->setAnswer($request);
         } catch (ModelNotFoundException $e) {
-            Session::flash('flash_error',
+            session()->flash('flash_error',
                 'Your answer cannot be saved. Please try again later.');
         }
 
-        $nextIndex = intval(Session::get('questionIndex')) + 1;
-        if($nextIndex < Session::get('maxQuestions')) {
-            Session::flash('questionIndex', $nextIndex);
+        $nextIndex = intval(session('questionIndex')) + 1;
+        if($nextIndex < session('maxQuestions')) {
+            session()->flash('questionIndex', $nextIndex);
             return redirect('exams');
         } else {
-            Session::flash('questionIndex', $nextIndex); // Add another one to prevent users from going back
-            return redirect('results/' . Session::get('lessonId'));
+            session()->flash('questionIndex', $nextIndex); // Add another one to prevent users from going back
+
+            redirect()->action(
+                'LessonController@storeActivity',
+                ['lessonId' => session('lessonId')]
+            );
+
+            return redirect('results/' . session('lessonId'));
         }
     }
 
@@ -142,24 +133,24 @@ class LessonWordController extends Controller
      */
     private function generateOptions($lessonWord, $words)
     {
-        $generatedStuff = [];
+        $generatedOptions = [];
         try {
-            $usedWordIds[] = $lessonWord[Session::get('questionIndex')]->word->id;
+            $usedWordIds[] = $lessonWord[session('questionIndex')]->word->id;
             $indexForAnswer = rand(0, 3); // Randomize index for the answer
             for($i = 0; $i < 4; $i++) {
                 if($i == $indexForAnswer) {
-                    $generatedStuff[] = [
-                        'id' => $lessonWord[Session::get('questionIndex')]->word->id,
-                        'word_japanese' => $lessonWord[Session::get('questionIndex')]->word->word_japanese,
-                        'word_vietnamese' => $lessonWord[Session::get('questionIndex')]->word->word_vietnamese
+                    $generatedOptions[] = [
+                        'id' => $lessonWord[session('questionIndex')]->word->id,
+                        'word_japanese' => $lessonWord[session('questionIndex')]->word->word_japanese,
+                        'word_vietnamese' => $lessonWord[session('questionIndex')]->word->word_vietnamese
                     ];
                 } else {
                     do {
                         $optionIndex = rand(0, count($words) - 1);
-                    } while($words[$optionIndex]['id'] == $lessonWord[Session::get('questionIndex')]->word->id ||
+                    } while($words[$optionIndex]['id'] == $lessonWord[session('questionIndex')]->word->id ||
                             in_array($words[$optionIndex]['id'], $usedWordIds)
                         );
-                    $generatedStuff[] = [
+                    $generatedOptions[] = [
                         'id' => $words[$optionIndex]['id'],
                         'word_vietnamese' => $words[$optionIndex]['word_vietnamese']
                     ];
@@ -171,6 +162,6 @@ class LessonWordController extends Controller
             return null;
         }
 
-        return $generatedStuff;
+        return $generatedOptions;
     }
 }

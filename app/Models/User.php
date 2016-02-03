@@ -90,4 +90,9 @@ class User extends Authenticatable
     {
         return $query->whereNotIn('id', $ids);
     }
+
+    public function getLearnedWordsIds()
+    {
+        return $this->learnedWords->lists('word_id');
+    }
 }

@@ -30,7 +30,11 @@
                                     {{ $result->word->word_japanese }}
                             </div>
                             <div class="row col-md-3">
-                                {{ $result->wordAnswered->word_vietnamese }}
+                                @if(isset($result->wordAnswered->word_vietnamese))
+                                    {{ $result->wordAnswered->word_vietnamese }}
+                                @else
+                                    -- NO ANSWER --
+                                @endif
                             </div>
                             <div class="row col-md-4">
                                 <audio controls>
